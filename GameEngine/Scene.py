@@ -1,43 +1,61 @@
 from __future__ import annotations
-from .ECS import Entity, Component, System, Components
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .GameObject import GameObject
+    from .Components import Component
+    from .Systems import ProcessingSystem, RenderingSystem
+    from pygame import Surface
+
+import GameEngine.Components
 import inspect
+from .Systems import *
 
 class Scene:
-
-    def __init__(self):
-        self.entities: dict[Component: set[Entity]] = {
+    def __init__(self, name):
+        self.name = name
+        self.objects: dict[Component: set[GameObject]] = {
             cls_obj: set()
-            for _, cls_obj in inspect.getmembers(Components)
+            for _, cls_obj in inspect.getmembers(GameEngine.Components)
             if inspect.isclass(cls_obj)
         }
-        self.systems: list[System] = []
-    
+        self.processing_systems: list[ProcessingSystem] = [
+            UpdateRunner
+        ]
+        self.rendering_systems: list[RenderingSystem] = [
+            SpriteRenderer
+        ]
+
     def update(self, dt: int) -> None:
-        for system in self.systems:
+        for system in self.processing_systems:
             if not system.is_active:
                 continue
             if system.interval:
                 system.buffered_time += dt
                 while system.buffered_time >= system.interval:
-                    system.update(dt)
+                    system.process(self, dt)
                     system.buffered_time -= system.interval
             else:
-                system.update(dt)
+                system.process(self, dt)
     
-    def add_entity(self, components: list[Component]) -> Entity:
-        entity: Entity = Entity(self, components)
-        self.entities.add(entity)
-        return entity
+    def render(self, surface: Surface):
+        surface.fill(((20,20,20)))
+        for system in self.rendering_systems:
+            if not system.is_active:
+                continue
+            system.render(self, surface)
 
-    def remove_entity(self, entity: Entity) -> None:
-        self.entites.remove(entity)
+    def add_object(self, obj: GameObject) -> None:
+        for component in obj.components.keys():
+            self.objects[component].add(obj)
+
+    def remove_object(self, obj: GameObject) -> None:
+        self.objects.remove(obj)
 
     def query(self, filter: list[Component]):
-        pass
-    
-    def add_system(self, system: System) -> None:
-        self.systems.append(system(self))
-    
-    def remove_system(self, system):
-        self.systems.remove(system)
+        objects: set = self.objects[filter[0]]
+        for component in filter[1:]:
+            objects.intersection_update(self.objects[component])
+        return objects
         
+    def make_active_scene(self):
+        Scene.active_scene = self
