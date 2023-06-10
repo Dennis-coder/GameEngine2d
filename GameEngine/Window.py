@@ -1,12 +1,11 @@
 import pygame as pg
 from .Scene import Scene
-from .GameObject import GameObject
+from .ECS.Entity import Entity
 from .InputManager import InputManager
 
 class Window:
     active_scene: Scene or None = None
     scenes: dict[str, Scene] = {}
-    current_objects: list[GameObject] = []
     show_fps = False
 
     @classmethod
@@ -22,7 +21,6 @@ class Window:
     @classmethod
     def change_scene(cls, new_scene: str):
         cls.active_scene = cls.scenes[new_scene]
-        cls.current_objects = cls.active_scene.objects
 
     @classmethod
     def set_show_fps(cls, val: bool) -> None:

@@ -1,23 +1,17 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .GameObject import GameObject
-    from .Components import Component
     from .Systems import ProcessingSystem, RenderingSystem
     from pygame import Surface
 
-import GameEngine.Components
-import inspect
+from .ECS import Registry, Entity
+from .Components import *
 from .Systems import *
 
 class Scene:
-    def __init__(self, name):
-        self.name = name
-        self.objects: dict[Component: set[GameObject]] = {
-            cls_obj: set()
-            for _, cls_obj in inspect.getmembers(GameEngine.Components)
-            if inspect.isclass(cls_obj)
-        }
+    def __init__(self, name: str):
+        self.name: str = name
+        self.registry: Registry = Registry()
         self.processing_systems: list[ProcessingSystem] = [
             UpdateRunner
         ]
@@ -44,18 +38,8 @@ class Scene:
                 continue
             system.render(self, surface)
 
-    def add_object(self, obj: GameObject) -> None:
-        for component in obj.components.keys():
-            self.objects[component].add(obj)
-
-    def remove_object(self, obj: GameObject) -> None:
-        self.objects.remove(obj)
-
-    def query(self, filter: list[Component]):
-        objects: set = self.objects[filter[0]]
-        for component in filter[1:]:
-            objects.intersection_update(self.objects[component])
-        return objects
-        
-    def make_active_scene(self):
-        Scene.active_scene = self
+    def create_entity(self):
+        entity = Entity(self.registry.create(), self)
+        entity.add_component(TransformComponent)
+        entity.add_component(TagComponent)
+        return entity
