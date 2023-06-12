@@ -1,10 +1,11 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from ..ECS.Entity import Entity
-    from ..Scene import Scene
 
-from abc import ABC, abstractclassmethod
+if TYPE_CHECKING:
+    from .Scene.Scene import Scene
+
+from abc import ABC
+from .Scene.Components import *
 
 class ProcessingSystem(ABC):
     interval: int or None = None
@@ -15,11 +16,10 @@ class ProcessingSystem(ABC):
     def process(cls, scene: Scene, dt: float):
         raise NotImplementedError()
 
-class RenderingSystem(ABC):
-    interval: int or None = None
-    buffered_time: int = 0
-    is_active: bool = False
-    
+class UpdateRunner(ProcessingSystem):
+    is_active = True
+
     @classmethod
-    def render(cls, scene: Scene, surface):
-        raise NotImplementedError()
+    def process(cls, scene: Scene, dt: float):
+        for entity in scene.view(ScriptComponent):
+            entity.script.update(dt)

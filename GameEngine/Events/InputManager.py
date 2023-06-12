@@ -1,42 +1,42 @@
 import pygame as pg
 
 class InputManager:
-    axes = {}
-    buttons: dict[str, int] = {}
+    __axes__ = {}
+    __buttons__: dict[str, int] = {}
 
-    down: list[bool] = [False] * 512
-    pressed: list[bool] = [False] * 512
-    up: list[bool] = [False] * 512
+    __down__: list[bool] = [False] * 512
+    __pressed__: list[bool] = [False] * 512
+    __up__: list[bool] = [False] * 512
 
     @classmethod
     def update(cls):
         new_pressed = pg.key.get_pressed()
         for key, is_pressed in enumerate(new_pressed):
-            cls.down[key] = is_pressed and not cls.pressed[key]
-            cls.up[key] = not is_pressed and cls.pressed[key]
-        cls.pressed = new_pressed
+            cls.__down__[key] = is_pressed and not cls.__pressed__[key]
+            cls.__up__[key] = not is_pressed and cls.__pressed__[key]
+        cls.__pressed__ = new_pressed
 
     @classmethod
     def get_key_down(cls, key: int) -> bool:
-        return cls.down[key]
+        return cls.__down__[key]
 
     @classmethod
     def get_key_pressed(cls, key: int) -> bool:
-        return cls.pressed[key]
+        return cls.__pressed__[key]
 
     @classmethod
     def get_key_up(cls, key: int) -> bool:
-        return cls.up[key]
+        return cls.__up__[key]
 
     @classmethod
     def register_button(cls, name: str, actual_button: int) -> None:
-        cls.buttons[name] = actual_button
+        cls.__buttons__[name] = actual_button
 
     @classmethod
     def get_button(cls, button: str) -> int:
-        if button not in cls.buttons:
+        if button not in cls.__buttons__:
             raise Exception(f"{button} is not a registered button")
-        return cls.buttons[button]
+        return cls.__buttons__[button]
 
     @classmethod
     def get_button_down(cls, button: str) -> bool:

@@ -1,21 +1,82 @@
-from GameEngine import Window
-from GameEngine.Components import *
-from PlayerMovement import PlayerMovement
-import pygame as pg
+from GameEngine import *
+
+class Player1Movement(BaseScript):
+    def __init__(self, player: Entity):
+        self.player = player
+
+    def update(self, dt: float):
+        dy: int = Input.get_key_pressed(K_s) - Input.get_key_pressed(K_w)
+        self.player.transform.position.y += dy*dt*10
+        if self.player.transform.position.y < -4:
+            self.player.transform.position.y = -4
+        if self.player.transform.position.y > 4:
+            self.player.transform.position.y = 4
+
+class Player2Movement(BaseScript):
+    def __init__(self, player: Entity):
+        self.player = player
+
+    def update(self, dt: float):
+        dy: int = Input.get_key_pressed(K_DOWN) - Input.get_key_pressed(K_UP)
+        self.player.transform.position.y += dy*dt*10
+
+        if self.player.transform.position.y < -4:
+            self.player.transform.position.y = -4
+        if self.player.transform.position.y > 4:
+            self.player.transform.position.y = 4
+
+class BallMovement(BaseScript):
+    def __init__(self, ball):
+        self.ball = ball
+        self.dx = 3
+        self.dy = 2
+
+    def update(self, dt: float):
+        self.ball.transform.position.x += self.dx*dt
+        self.ball.transform.position.y += self.dy*dt
+
+        if self.ball.transform.position.y < -4.5:
+            self.ball.transform.position.y = -4.5
+            self.dy *= -1
+        if self.ball.transform.position.y > 4.5:
+            self.ball.transform.position.y = 4.5
+            self.dy *= -1
+
+def settings():
+    Window.set_show_fps(True)
+    Assets.set_pixels_per_unit(32)
+
+
+def load_assets():
+    Assets.load_image("assets/pepsi.png", "pepsi", resize=(0.6,2))
+    Assets.load_image("assets/coke.png", "coke", resize=(0.6,2))
+    Assets.load_image("assets/ball.png", "ball", resize=(1,1))
 
 def main():
     scene = Window.create_scene("test")
     Window.change_scene("test")
-    
+
     camera = scene.create_entity()
-    camera.add_component(CameraComponent)
-    camera.add_component(ScriptComponent, PlayerMovement)
+    camera.add_component(CameraComponent, Window.get_win_size(), 5, camera.transform)
+    scene.set_primary_camera(camera)
 
-    player = scene.create_entity()
-    player.add_component(SpriteComponent, pg.image.load("assets/ship.png"))
+    player1 = scene.create_entity()
+    player1.transform.position.x = -8
+    player1.add_component(SpriteComponent, "coke")
+    player1.add_component(ScriptComponent, Player1Movement(player1))
 
-    Window.set_show_fps(True)
+    player2 = scene.create_entity()
+    player2.transform.position.x = 8
+    player2.add_component(SpriteComponent, "pepsi")
+    player2.add_component(ScriptComponent, Player2Movement(player2))
+    
+    ball = scene.create_entity()
+    ball.add_component(SpriteComponent, "ball")
+    ball.add_component(ScriptComponent, BallMovement(ball))
+
     Window.start()
 
 if __name__ == "__main__":
+    settings()
+    load_assets()
     main()
