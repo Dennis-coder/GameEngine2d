@@ -14,10 +14,12 @@ class Scene:
         self.__name__ = name
         self.__registry__ = Registry()
         self.__processing_systems__: list[ProcessingSystem] = [
-            UpdateRunner
+            UpdateRunner,
+            BoxCollisionSystem
         ]
         self.__rendering_systems__: list[RenderingSystem] = [
-            SpriteRenderer
+            SpriteRenderer,
+            BoxColliderRenderer
         ]
         self.__primary_camera__ = None
 
@@ -52,7 +54,7 @@ class Scene:
     def set_primary_camera(self, camera):
         self.__primary_camera__ = camera
     
-    def get_primary_camera(self):
+    def get_primary_camera(self) -> Entity:
         return self.__primary_camera__
 
     @property

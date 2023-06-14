@@ -6,7 +6,7 @@ class Window:
     __active_scene__: Scene or None = None
     __scenes__: dict[str, Scene] = {}
     __show_fps__ = False
-    __win_size__ = (640,360)
+    __win_size__ = (640, 360)
 
     @classmethod
     def create_scene(cls, name: str):
@@ -39,10 +39,10 @@ class Window:
 
             if cls.__show_fps__:
                 text = font.render(f"FPS: {int(clock.get_fps())}", True, (0, 255, 100))
-                surface.blit(text, (590, 8))
+                surface.blit(text, (cls.__win_size__[0]-50, 8))
 
             pg.display.update()
-            clock.tick(100)
+            clock.tick()
     
     @classmethod
     def set_show_fps(cls, val: bool) -> None:

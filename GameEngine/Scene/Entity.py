@@ -23,8 +23,8 @@ class Entity:
         return self.scene.__registry__.get(self.entity_id, components)
 
     @property
-    def transform(self) -> Transform:
-        return self.get_component(TransformComponent).transform
+    def transform(self) -> TransformComponent:
+        return self.get_component(TransformComponent)
     
     @property
     def tag(self) -> str:
@@ -41,6 +41,13 @@ class Entity:
     @property
     def script(self) -> BaseScript:
         return self.get_component(ScriptComponent).script
+    
+    @property
+    def box_collider(self) -> BoxCollider:
+        return self.get_component(BoxCollider)
 
     def __getitem__(self, component):
         return self.get_component(component)
+    
+    def __eq__(self, other: Entity):
+        return self.entity_id == other.entity_id

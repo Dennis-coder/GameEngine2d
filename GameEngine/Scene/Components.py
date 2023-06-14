@@ -12,22 +12,10 @@ from abc import ABC, abstractmethod
 
 class TransformComponent:
     def __init__(self):
-        self.transform = Transform()
-
-class Transform:
-    def __init__(self):
-        self.__matrix__ = glm.mat4()
-    
-    def translate(self, dpos):
-        self.__matrix__ = glm.translate(self.__matrix__, dpos)
-    
-    @property
-    def position(self):
-        return self.__matrix__[3]
-    
-    @property
-    def matrix(self):
-        return self.__matrix__
+        self.size = glm.vec2()
+        self.scale = glm.mat2()
+        self.position = glm.vec2()
+        self.rotation = 0
 
 class TagComponent:
     def __init__(self, tag="Unnamed"):
@@ -51,6 +39,18 @@ class BaseScript(ABC):
     @abstractmethod
     def update(self, obj: Entity, dt: float):
         raise NotImplementedError()
+    
+class BoxCollider:
+    def __init__(self, position, size, trigger=None):
+        self.position = glm.vec2(*position)
+        self.size = glm.mat2(*size)
+        self.trigger = trigger
+
+class CircleCollider:
+    def __init__(self, position, size, trigger):
+        self.position = glm.vec2(*position)
+        self.size = size
+        self.trigger = trigger
 
 class RigidbodyComponent:
     def __init__(self):
