@@ -47,6 +47,19 @@ class UnitLinesRenderer(RenderingSystem):
     def render(cls, scene: Scene, surface: pg.Surface):
         camera = scene.get_primary_camera()
         view_matrix = camera.camera.get_view_proj()
+        top_y = camera.transform.position.y - camera.camera.__size__[1]
+        bot_y = camera.transform.position.y + camera.camera.__size__[1]
+        for x in range(int(camera.transform.position.x - camera.camera.__size__[0]), int(camera.transform.position.x + camera.camera.__size__[0])):
+            start = view_matrix * (camera.transform.scale * (x, top_y))
+            end = view_matrix * (camera.transform.scale * (x, bot_y))
+            pg.draw.line(surface, (200,200,200), start, end, 1)
+
+        left_x = camera.transform.position.x - camera.camera.__size__[0]
+        right_x = camera.transform.position.x + camera.camera.__size__[0]
+        for y in range(int(camera.transform.position.y - camera.camera.__size__[1]), int(camera.transform.position.y + camera.camera.__size__[1])):
+            start = view_matrix * (camera.transform.scale * (left_x, y))
+            end = view_matrix * (camera.transform.scale * (right_x, y))
+            pg.draw.line(surface, (200,200,200), start, end, 1)
 
 class BoxColliderRenderer(RenderingSystem):
     is_active = True

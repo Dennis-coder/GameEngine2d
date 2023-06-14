@@ -41,4 +41,8 @@ class BoxCollisionSystem(ProcessingSystem):
                 pos2 = entity2.box_collider.position + entity2.transform.position
                 size2 = entity2.box_collider.size * (entity2.transform.scale * entity2.transform.size)
                 if abs(pos1.x-pos2.x) < size1.x/2 + size2.x/2 and abs(pos1.y-pos2.y) < size1.y/2 + size2.y/2:
-                    entity.box_collider.trigger(entity2)
+                    if entity2.entity_id not in entity.box_collider.collided_with_last_frame:
+                        entity.box_collider.trigger(entity2)
+                        entity.box_collider.collided_with_last_frame.add(entity2.entity_id)
+                elif entity2.entity_id in entity.box_collider.collided_with_last_frame:
+                    entity.box_collider.collided_with_last_frame.remove(entity2.entity_id)

@@ -3,11 +3,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .Entity import Entity
 
-import pygame as pg
 import glm
 from ..Graphics.Camera import Camera
 from abc import ABC, abstractmethod
-
 
 
 class TransformComponent:
@@ -45,12 +43,14 @@ class BoxCollider:
         self.position = glm.vec2(*position)
         self.size = glm.mat2(*size)
         self.trigger = trigger
+        self.collided_with_last_frame = set()
 
 class CircleCollider:
     def __init__(self, position, size, trigger):
         self.position = glm.vec2(*position)
         self.size = size
         self.trigger = trigger
+        self.collided_with_last_frame = set()
 
 class RigidbodyComponent:
     def __init__(self):

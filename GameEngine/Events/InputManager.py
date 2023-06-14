@@ -11,9 +11,9 @@ class InputManager:
     @classmethod
     def update(cls):
         new_pressed = pg.key.get_pressed()
-        for key, is_pressed in enumerate(new_pressed):
-            cls.__down__[key] = is_pressed and not cls.__pressed__[key]
-            cls.__up__[key] = not is_pressed and cls.__pressed__[key]
+        # for key, is_pressed in enumerate(new_pressed):
+        #     cls.__down__[key] = is_pressed and not cls.__pressed__[key]
+        #     cls.__up__[key] = not is_pressed and cls.__pressed__[key]
         cls.__pressed__ = new_pressed
 
     @classmethod

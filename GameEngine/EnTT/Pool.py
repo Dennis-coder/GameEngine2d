@@ -6,7 +6,7 @@ class Pool:
         self.__capacity__ = capacity               # capacity of set or size of dense
         self.__max_value__ = max_value           # Maximum value in set or size of sparse
         self.__n__ = 0                     # Current no of elements, No elements initially
- 
+
     def __index__(self, entity_id):
         # Searched element must be in range
         if entity_id > self.__max_value__:

@@ -1,5 +1,4 @@
 import glm
-import pygame as pg
 
 class Camera:
     def __init__(self, win_size, size, transform):

@@ -14,12 +14,13 @@ class Scene:
         self.__name__ = name
         self.__registry__ = Registry()
         self.__processing_systems__: list[ProcessingSystem] = [
-            UpdateRunner,
-            BoxCollisionSystem
+            # UpdateRunner,
+            BoxCollisionSystem,
         ]
         self.__rendering_systems__: list[RenderingSystem] = [
+            UnitLinesRenderer,
             SpriteRenderer,
-            BoxColliderRenderer
+            BoxColliderRenderer,
         ]
         self.__primary_camera__ = None
 
